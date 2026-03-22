@@ -8,24 +8,19 @@
 <style>
 body {
   margin: 0;
-  background: #0f0f0f;
+  background: black;
   overflow: hidden;
-  font-family: Arial;
-}
-
-canvas {
-  display: block;
 }
 </style>
 </head>
 
 <body>
 
-<script type="module">
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
-import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
 
+<script>
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0f0f0f);
 
@@ -36,7 +31,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-/* Light */
+/* LIGHT */
 const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(2,2,2);
 scene.add(light);
@@ -44,32 +39,30 @@ scene.add(light);
 const ambient = new THREE.AmbientLight(0xffffff, 0.6);
 scene.add(ambient);
 
-/* TEST CUBE (always visible) */
+/* TEST CUBE (must show) */
 const geo = new THREE.BoxGeometry();
-const mat = new THREE.MeshStandardMaterial({ color: 0x00ffc3 });
+const mat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const cube = new THREE.Mesh(geo, mat);
-cube.position.y = 0.5;
 scene.add(cube);
 
-/* Load Model */
-const loader = new GLTFLoader();
+/* LOAD MODEL */
+const loader = new THREE.GLTFLoader();
 loader.load(
-  "./character.glb",
-  (gltf) => {
+  "character.glb",
+  function (gltf) {
     console.log("Model loaded ✅");
-    gltf.scene.scale.set(1.5,1.5,1.5);
     scene.add(gltf.scene);
   },
   undefined,
-  (error) => {
-    console.log("Model error ❌", error);
+  function (error) {
+    console.log("ERROR ❌", error);
   }
 );
 
-/* Controls */
-const controls = new OrbitControls(camera, renderer.domElement);
+/* CONTROLS */
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-/* Animate */
+/* ANIMATION */
 function animate() {
   requestAnimationFrame(animate);
   cube.rotation.y += 0.01;
@@ -77,8 +70,8 @@ function animate() {
 }
 animate();
 
-/* Resize */
-window.addEventListener("resize", () => {
+/* RESIZE */
+window.addEventListener("resize", function () {
   camera.aspect = window.innerWidth/window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
